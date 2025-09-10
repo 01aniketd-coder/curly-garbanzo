@@ -1,0 +1,27 @@
+name: Install XAMPP on Server
+
+on:
+  workflow_dispatch:  # allows manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 192.168.20.129 >> ~/.ssh/known_hosts
+
+      - name: Install XAMPP on destination server
+        run: |
+          ssh -i ~/.ssh/id_rsa server@192.168.20.129 << 'EOF'
+            wget https://www.apachefriends.org/xampp-files/8.2.12/xampp-linux-x64-8.2.12-0-installer.run -O xampp-installer.run
+            chmod +x xampp-installer.run
+            sudo ./xampp-installer.run --mode unattended
+          EOF

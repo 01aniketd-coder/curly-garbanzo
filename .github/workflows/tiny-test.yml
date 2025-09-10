@@ -1,0 +1,11 @@
+name: Tiny Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  just-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make ssh dir
+        run: mkdir -p ~/.ssh

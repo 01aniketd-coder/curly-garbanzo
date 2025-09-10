@@ -1,0 +1,44 @@
+name: hello
+
+on:
+  workflow_dispatch:   
+
+jobs:
+  job1:
+    name: print message job1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say hello
+        run: echo "Hello Aniket"
+      - name: Print repo name (GitHub context)
+        run: echo "My Repository name is ${{ github.repository }}"
+
+  job2:
+    name: print message 2 job2
+    runs-on: ubuntu-latest
+    needs: job1
+    env:
+      REPO_NAME: "Hello World"
+    steps:
+      - name: Print designation
+        run: echo "Your Designation is DevOps Learner"
+      - name: Print custom env var
+        run: echo "My Repository name is $REPO_NAME"
+
+  job3:
+    name: print message like step 3 job3
+    runs-on: ubuntu-latest
+    needs: job2
+    steps:
+      - name: Print joining message
+        run: echo "You are going to join capgemini"
+      - name: Print secret 
+        run: echo "My Secret value is ${{ secrets.MY_SECRET }}"
+
+  job4:
+    name: print message JOB 4
+    runs-on: ubuntu-latest
+    needs: job3
+    steps:
+      - name: Contact number
+        run: echo "my contact number is 8275216189"

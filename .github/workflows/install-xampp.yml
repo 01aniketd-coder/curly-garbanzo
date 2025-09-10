@@ -3,7 +3,8 @@ name: Auto Install XAMPP
 on:
   push:
     branches:
-      - main   # triggers on every commit to main
+      - main
+  workflow_dispatch:   # optional: allows manual trigger from Actions tab
 
 jobs:
   deploy:
@@ -15,14 +16,14 @@ jobs:
 
       - name: Setup SSH
         run: |
-          mkdir -p aniket/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > aniket/.ssh/id_rsa
-          chmod 600 aniket/.ssh/id_rsa
-          ssh-keyscan -H 192.168.20.129 >> aniket/.ssh/known_hosts
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 192.168.20.129 >> ~/.ssh/known_hosts
 
       - name: Install and Start XAMPP
         run: |
-          ssh -i aniket/.ssh/id_rsa server@192.168.20.129 << 'EOF'
+          ssh -i ~/.ssh/id_rsa aniket@192.168.20.129 << 'EOF'
             # Download XAMPP installer
             wget https://www.apachefriends.org/xampp-files/8.2.12/xampp-linux-x64-8.2.12-0-installer.run -O xampp-installer.run
             chmod +x xampp-installer.run

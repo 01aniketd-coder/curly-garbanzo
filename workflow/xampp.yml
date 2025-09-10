@@ -1,7 +1,9 @@
-name: Install XAMPP on Server
+name: Auto Install XAMPP
 
 on:
-  workflow_dispatch:  # allows manual trigger
+  push:
+    branches:
+      - main   # triggers on every commit to main
 
 jobs:
   deploy:
@@ -18,10 +20,19 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 192.168.20.129 >> ~/.ssh/known_hosts
 
-      - name: Install XAMPP on destination server
+      - name: Install and Start XAMPP
         run: |
           ssh -i ~/.ssh/id_rsa server@192.168.20.129 << 'EOF'
+            # Download XAMPP installer
             wget https://www.apachefriends.org/xampp-files/8.2.12/xampp-linux-x64-8.2.12-0-installer.run -O xampp-installer.run
             chmod +x xampp-installer.run
+
+            # Install XAMPP silently
             sudo ./xampp-installer.run --mode unattended
+
+            # Start Apache and MySQL
+            sudo /opt/lampp/lampp start
+
+            # Check status
+            sudo /opt/lampp/lampp status
           EOF
